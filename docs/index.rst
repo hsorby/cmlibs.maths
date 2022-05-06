@@ -27,8 +27,8 @@ Algorithms
 The *algorithms* module is a collection of functions that perform calculations on python lists.
 These functions are commonly used in other OpenCMISS packages.
 
-API
----
+Package API
+-----------
 
 Vector Operations Module
 ************************
