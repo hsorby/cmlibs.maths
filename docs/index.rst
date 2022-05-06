@@ -35,6 +35,7 @@ Vector Operations Module
 
 .. automodule:: opencmiss.maths.vectorops
    :members:
+   :exclude-members: eulerToRotationMatrix3, axisAngleToQuaternion, axisAngleToRotationMatrix, matrixmult, mxconstantmult, vectormatrixmult, vectormxmult, rotmx, rotationMatrix3ToEuler, mxmult, mxconstantmult, mxvectormult
 
 Algorithms Module
 *****************
