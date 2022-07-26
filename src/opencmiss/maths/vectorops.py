@@ -170,10 +170,11 @@ def axis_angle_to_quaternion(axis, angle):
 
 def axis_angle_to_rotation_matrix(axis, angle):
     """
+    Convert axis angle to a rotation matrix.
+
     :param axis: Unit vector axis of rotation.
     :param angle: Angle of rotation in right hand sense around axis, in radians.
-    :return: 3x3 rotation matrix suitable for pre-multiplying vector v:
-    i.e. v' = Mv
+    :return: 3x3 rotation matrix suitable for pre-multiplying vector v: i.e. v' = Mv
     """
     return quaternion_to_rotation_matrix(axis_angle_to_quaternion(axis, angle))
 

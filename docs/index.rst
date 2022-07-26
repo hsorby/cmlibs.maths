@@ -42,4 +42,3 @@ Algorithms Module
 
 .. automodule:: opencmiss.maths.algorithms
    :members:
-

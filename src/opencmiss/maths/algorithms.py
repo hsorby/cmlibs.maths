@@ -15,7 +15,9 @@ def calculateExtents(values):
     """
     Calculate the maximum and minimum for each coordinate x, y, and z
     Return the max's and min's as:
+
      [x_min, x_max, y_min, y_max, z_min, z_max]
+
     """
     x_min = 0; x_max = 1
     y_min = 0; y_max = 1
