@@ -105,6 +105,57 @@ def matrix_mult(a, b):
     return [vector_matrix_mult(row_a, b) for row_a in a]
 
 
+def matrix_minor(a, i, j):
+    return [row[:j] + row[j + 1:] for row in (a[:i] + a[i + 1:])]
+
+
+def matrix_det(a):
+    if len(a) == 2:
+        return a[0][0] * a[1][1] - a[0][1] * a[1][0]
+
+    det = 0.0
+    for c in range(len(a)):
+        det += ((-1) ** c) * a[0][c] * matrix_det(matrix_minor(a, 0, c))
+
+    return det
+
+
+def matrix_inv(a):
+    """
+    Invert a square matrix by compouting the determinant and cofactor matrix.
+    """
+    det = matrix_det(a)
+
+    if len(a) == 2:
+        return matrix_constant_mult([[a[1][1], -1 * a[0][1]], [-1 * a[1][0], a[0][0]]], 1 / det)
+
+    cofactor = []
+    for r in range(len(a)):
+        row = []
+        for c in range(len(a)):
+            minor = matrix_minor(a, r, c)
+            row.append(((-1) ** (r + c)) * matrix_det(minor))
+        cofactor.append(row)
+
+    cofactor_t = transpose(cofactor)
+    return matrix_constant_mult(cofactor_t, 1 / det)
+
+
+def identity_matrix(size):
+    """
+    Create an identity matrix of size size.
+    """
+    identity = []
+    for r in range(size):
+        row = []
+        for c in range(size):
+            row.append(1.0 if r == c else 0.0)
+
+        identity.append(row)
+
+    return identity
+
+
 def transpose(a):
     if sys.version_info < (3, 0):
         return map(list, zip(*a))
