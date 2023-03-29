@@ -1,4 +1,4 @@
-from opencmiss.maths.vectorops import sub, dot, add, mult, cross, normalize
+from cmlibs.maths.vectorops import sub, dot, add, mult, cross, normalize
 
 
 def calculateLinePlaneIntersection(pt1, pt2, point_on_plane, plane_normal):

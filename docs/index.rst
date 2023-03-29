@@ -1,7 +1,7 @@
-OpenCMISS Maths
-===============
+CMLibs Maths
+============
 
-OpenCMISS Maths is a Python package containing math utility functions.
+CMLibs Maths is a Python package containing math utility functions.
 These utility functions are general utilities commonly used by downstream packages.
 
 This package provides two modules
@@ -9,11 +9,11 @@ This package provides two modules
 #. vectorops
 #. algorithms
 
-These modules are surfaced under the namespace package *opencmiss* within the *maths* package.
+These modules are surfaced under the namespace package *cmlibs* within the *maths* package.
 To use these modules the following import statement can be used::
 
-  import opencmiss.maths.vectorops
-  import opencmiss.maths.algorithms
+  import cmlibs.maths.vectorops
+  import cmlibs.maths.algorithms
 
 Vector Operations
 -----------------
@@ -25,7 +25,7 @@ Algorithms
 ----------
 
 The *algorithms* module is a collection of functions that perform calculations on python lists.
-These functions are commonly used in other OpenCMISS packages.
+These functions are commonly used in other CMLibs packages.
 
 Package API
 -----------
@@ -33,12 +33,12 @@ Package API
 Vector Operations Module
 ************************
 
-.. automodule:: opencmiss.maths.vectorops
+.. automodule:: cmlibs.maths.vectorops
    :members:
    :exclude-members: eulerToRotationMatrix3, axisAngleToQuaternion, axisAngleToRotationMatrix, matrixmult, mxconstantmult, vectormatrixmult, vectormxmult, rotmx, rotationMatrix3ToEuler, mxmult, mxconstantmult, mxvectormult
 
 Algorithms Module
 *****************
 
-.. automodule:: opencmiss.maths.algorithms
+.. automodule:: cmlibs.maths.algorithms
    :members:

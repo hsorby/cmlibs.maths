@@ -2,7 +2,7 @@
 
 # -- Project information
 
-project = 'OpenCMISS Maths'
+project = 'CMLibs Maths'
 copyright = '2022, University of Auckland'
 author = 'University of Auckland'
 

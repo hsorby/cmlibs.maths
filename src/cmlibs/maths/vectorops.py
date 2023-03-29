@@ -164,7 +164,7 @@ def transpose(a):
 
 def euler_to_rotation_matrix(euler_angles):
     """
-    From OpenCMISS-Zinc graphics_library.cpp, with matrix transposed to row major.
+    From Zinc graphics_library.cpp, with matrix transposed to row major.
     Matrix is product RzRyRx, giving rotation about x, then y, then z with
     positive angles rotating by right hand rule about axis.
     :param euler_angles: 3 angles in radians, components:
@@ -189,7 +189,7 @@ def euler_to_rotation_matrix(euler_angles):
 
 def rotation_matrix_to_euler(matrix):
     """
-    From OpenCMISS-Zinc graphics_library.cpp, with matrix transposed to row major.
+    From Zinc graphics_library.cpp, with matrix transposed to row major.
     Inverse function to euler_to_rotation_matrix.
     """
     MATRIX_TO_EULER_TOLERANCE = 1.0E-12
