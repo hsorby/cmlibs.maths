@@ -1,10 +1,14 @@
 
 ===============
-OpenCMISS Maths
+CMLibs Maths
 ===============
 
-This package has been renamed. Use :code:`pip install cmlibs.maths` instead.
-New package: https://pypi.org/project/cmlibs.maths/
+CMLibs maths functions.  This software can be found on PyPi and installed with the following command::
 
-See `OpenCMISS2CMLibs rename tool <https://pypi.org/project/opencmiss2cmlibs/>`_ for help with renaming your own code.
+  pip install cmlibs.maths
+
+Distribution
+============
+
+This software uses regex to extract the version number information from the package. The version number for this package is stored in 'src/cmlibs/maths/__init__.py'
 
