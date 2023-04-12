@@ -36,7 +36,6 @@ requires = []
 classifiers = [
     "License :: OSI Approved :: Apache Software License",
     "Programming Language :: Python",
-    "Obsoletes-Dist: opencmiss.maths",
 ]
 
 setup(
