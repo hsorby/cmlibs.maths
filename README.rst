@@ -7,6 +7,17 @@ CMLibs maths functions.  This software can be found on PyPi and installed with t
 
   pip install cmlibs.maths
 
+Vector Operations
+=================
+
+A collection of functions that operate on python lists as if they were vectors.
+A basic implementation to forgo the need to use numpy.
+
+Algorithms
+==========
+
+A few basic functions for calculating line, plane intersections and plane normals.
+
 Distribution
 ============
 
