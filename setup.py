@@ -15,22 +15,14 @@ def readfile(filename, split=False):
 
 
 readme = readfile("README.rst", split=True)
-readme.append('License')
-readme.append('=======')
-readme.append('')
-readme.append('::')
-readme.append('')
-readme.append('')
-
-software_licence = readfile("LICENSE")
 
 requires = ["cmlibs.maths"]
 
 setup(
     name='opencmiss.maths',
-    version="0.2.1",
+    version="0.2.2",
     description='OpenCMISS Math functions.',
-    long_description='\n'.join(readme) + software_licence,
+    long_description='\n'.join(readme),
     long_description_content_type='text/x-rst',
     classifiers=["Development Status :: 7 - Inactive"],
     author='Hugh Sorby',
