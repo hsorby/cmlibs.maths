@@ -33,13 +33,19 @@ software_licence = readfile("LICENSE")
 
 requires = []
 
+classifiers = """\
+License :: OSI Approved :: Apache Software License
+Programming Language :: Python
+Obsoletes-Dist: opencmiss.maths
+"""
+
 setup(
     name='cmlibs.maths',
     version=version,
     description='CMLibs Math functions.',
     long_description='\n'.join(readme) + software_licence,
     long_description_content_type='text/x-rst',
-    classifiers=[],
+    classifiers=filter(None, classifiers.split("\n")),
     author='Hugh Sorby',
     author_email='h.sorby@auckland.ac.nz',
     url='https://github.com/CMLibs-python/cmlibs.maths',
