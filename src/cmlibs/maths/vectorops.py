@@ -169,9 +169,10 @@ def transpose(a):
         return map(list, zip(*a))
     return list(map(list, zip(*a)))
 
+
 def angle(u, v):
     """
-    Calculate the angle bewteen two non-zero vectors.
+    Calculate the angle between two non-zero vectors.
     :return: The angle between them in radians.
     """
     d = magnitude(u) * magnitude(v)
@@ -225,27 +226,27 @@ def rotation_matrix_to_euler(matrix):
     return euler_angles
 
 
-def axis_angle_to_quaternion(axis, angle):
+def axis_angle_to_quaternion(axis, theta):
     """
     :param axis: Unit vector axis of rotation.
-    :param angle: Angle of rotation in right hand sense around axis, in radians.
+    :param theta: Angle of rotation in right hand sense around axis, in radians.
     :return: Quaternion representing rotation.
     """
-    sin_half_angle = sin(angle / 2)
-    return [cos(angle / 2), axis[0] * sin_half_angle, axis[1] * sin_half_angle, axis[2] * sin_half_angle]
+    sin_half_angle = sin(theta / 2)
+    return [cos(theta / 2), axis[0] * sin_half_angle, axis[1] * sin_half_angle, axis[2] * sin_half_angle]
 
 
-def axis_angle_to_rotation_matrix(axis, angle):
+def axis_angle_to_rotation_matrix(axis, theta):
     """
     Convert axis angle to a rotation matrix.
 
     :param axis: Unit vector axis of rotation.
-    :param angle: Angle of rotation in right hand sense around axis, in radians.
+    :param theta: Angle of rotation in right hand sense around axis, in radians.
     :return: 3x3 rotation matrix suitable for pre-multiplying vector v: i.e. v' = Mv
     """
     axis = div(axis, sqrt(dot(axis, axis)))
-    a = cos(angle / 2.0)
-    b, c, d = mult(axis, -sin(angle / 2.0))
+    a = cos(theta / 2.0)
+    b, c, d = mult(axis, -sin(theta / 2.0))
     aa, bb, cc, dd = a * a, b * b, c * c, d * d
     bc, ad, ac, ab, bd, cd = b * c, a * d, a * c, a * b, b * d, c * d
     return [[aa + bb - cc - dd, 2 * (bc + ad), 2 * (bd - ac)],
