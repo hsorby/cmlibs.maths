@@ -1,4 +1,7 @@
-from cmlibs.maths.vectorops import sub, dot, add, mult, cross, normalize
+import math
+import numpy as np
+
+from cmlibs.maths.vectorops import sub, dot, add, mult, cross, normalize, magnitude, axis_angle_to_rotation_matrix
 
 
 def calculateLinePlaneIntersection(pt1, pt2, point_on_plane, plane_normal):
@@ -45,5 +48,23 @@ def calculatePlaneNormal(pt1, pt2, pt3):
     return normalize(cross_vec)
 
 
+def calculate_centroid(data_points):
+    actual_points = np.array(data_points).transpose()
+    centroid = np.mean(actual_points, axis=1, keepdims=True)
+    centroid = centroid.flatten()
+
+    return centroid
+
+
+def calculate_rotation_matrix(vector_1, vector_2):
+    normal_dot_product = dot(vector_1, vector_2)
+    normal1_length = magnitude(vector_1)
+    normal2_length = magnitude(vector_2)
+    theta = math.acos(normal_dot_product / (normal1_length * normal2_length))
+
+    return axis_angle_to_rotation_matrix(cross(vector_2, vector_1), theta)
+
+
 # define PEP8 compliant names.
 calculate_line_plane_intersection = calculateLinePlaneIntersection
+calculate_plane_normal = calculatePlaneNormal
