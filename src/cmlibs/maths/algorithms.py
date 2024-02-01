@@ -1,10 +1,7 @@
-import math
-import numpy as np
-
-from cmlibs.maths.vectorops import sub, dot, add, mult, cross, normalize, magnitude, axis_angle_to_rotation_matrix
+from cmlibs.maths.vectorops import sub, dot, add, mult, cross, normalize
 
 
-def calculateLinePlaneIntersection(pt1, pt2, point_on_plane, plane_normal):
+def calculate_line_plane_intersection(pt1, pt2, point_on_plane, plane_normal):
     line_direction = sub(pt2, pt1)
     d = dot(sub(point_on_plane, pt1), plane_normal) / dot(line_direction, plane_normal)
     intersection_point = add(mult(line_direction, d), pt1)
@@ -14,7 +11,7 @@ def calculateLinePlaneIntersection(pt1, pt2, point_on_plane, plane_normal):
     return None
 
 
-def calculateExtents(values):
+def calculate_extents(values):
     """
     Calculate the maximum and minimum for each coordinate x, y, and z
     Return the max's and min's as:
@@ -41,7 +38,7 @@ def calculateExtents(values):
     return [x_min, x_max, y_min, y_max, z_min, z_max]
 
 
-def calculatePlaneNormal(pt1, pt2, pt3):
+def calculate_plane_normal(pt1, pt2, pt3):
     dir_1 = sub(pt2, pt1)
     dir_2 = sub(pt3, pt1)
     cross_vec = cross(dir_1, dir_2)
@@ -49,22 +46,13 @@ def calculatePlaneNormal(pt1, pt2, pt3):
 
 
 def calculate_centroid(data_points):
-    actual_points = np.array(data_points).transpose()
-    centroid = np.mean(actual_points, axis=1, keepdims=True)
-    centroid = centroid.flatten()
+    actual_points = list(map(list, zip(*data_points)))
+    centroid = [sum(dim_points) / len(dim_points) for dim_points in actual_points]
 
     return centroid
 
 
-def calculate_rotation_matrix(vector_1, vector_2):
-    normal_dot_product = dot(vector_1, vector_2)
-    normal1_length = magnitude(vector_1)
-    normal2_length = magnitude(vector_2)
-    theta = math.acos(normal_dot_product / (normal1_length * normal2_length))
-
-    return axis_angle_to_rotation_matrix(cross(vector_2, vector_1), theta)
-
-
-# define PEP8 compliant names.
-calculate_line_plane_intersection = calculateLinePlaneIntersection
-calculate_plane_normal = calculatePlaneNormal
+# Define legacy names.
+calculateLinePlaneIntersection = calculate_line_plane_intersection
+calculatePlaneNormal = calculate_plane_normal
+calculateExtents = calculate_extents
