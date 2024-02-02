@@ -46,6 +46,13 @@ def calculate_plane_normal(pt1, pt2, pt3):
 
 
 def calculate_centroid(data_points):
+    """
+    Calculates the centroid of a list of point coordinates.
+
+    :param data_points: A list containing 'n' lists (coordinates) of size 'm'. With 'n' denoting the number of points and 'm' denoting the
+        number of dimensions of the coordinates.
+    :return: An m-dimensional list containing the coordinates of the centroid.
+    """
     actual_points = list(map(list, zip(*data_points)))
     centroid = [sum(dim_points) / len(dim_points) for dim_points in actual_points]
 
