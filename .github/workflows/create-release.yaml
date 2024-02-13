@@ -8,6 +8,7 @@ on:
 jobs:
   do-release:
     if: github.repository == 'cmlibs-python/cmlibs.maths'
+    permissions: write-all
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout
