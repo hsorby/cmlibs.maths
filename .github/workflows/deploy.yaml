@@ -7,8 +7,11 @@ jobs:
   build-package:
     runs-on: ubuntu-20.04
     name: Build library package
-    outputs:
-      dist_dir: ${{ steps.build.outputs.dist_dir }}
+    environment:
+      name: pypi
+      url: https://pypi.org/p/cmlibs.maths
+    permissions:
+      id-token: write  # IMPORTANT: this permission is mandatory for trusted publishing
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -25,23 +28,7 @@ jobs:
         run: |
           python --version
           python -m build . --wheel
+          echo "dist content:"
           ls dist/
-          cd dist
-          echo $PWD
-          echo "dist_dir=$PWD" >> $GITHUB_OUTPUT
-  pypi-publish:
-    name: Upload release to PyPI
-    runs-on: ubuntu-20.04
-    needs: build-package
-    environment:
-      name: pypi
-      url: https://pypi.org/p/cmlibs.maths
-    permissions:
-      id-token: write  # IMPORTANT: this permission is mandatory for trusted publishing
-    steps:
-      - name: Test
-        run: |
-          ls
-          ls ${{ needs.build-package.outputs.dist_dir }}
       - name: Publish package distributions to PyPI
         uses: pypa/gh-action-pypi-publish@release/v1
