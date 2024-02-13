@@ -1,0 +1,27 @@
+name: Create release
+
+on:
+  push:
+    tags:
+      - "v*.*.*"
+
+jobs:
+  do-release:
+    if: github.repository == 'cmlibs-python/cmlibs.maths'
+    runs-on: ubuntu-20.04
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Create Release
+        id: create_release
+        uses: KaiWedekind/create-release@v1.0.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }} # This token is provided by Actions, you do not need to create your own token
+        with:
+          tag_name: ${{ github.ref }}
+          release_name: Release ${{ github.ref }}
+      - name: Send event
+        uses: peter-evans/repository-dispatch@v3
+        with:
+          event-type: release-created
+          client-payload: '{"ref": "${{ github.ref }}", "sha": "${{ github.sha }}", "release_id": "${{ steps.create_release.outputs.id }}"}'
