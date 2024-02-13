@@ -17,3 +17,5 @@ jobs:
         uses: hsorby/release-python-package-action@main
         with:
           release-repository: hsorby/cmlibs.maths
+          pypi-package-name: cmlibs.maths
+          github-token: ${{ secrets.GITHUB_TOKEN }}
