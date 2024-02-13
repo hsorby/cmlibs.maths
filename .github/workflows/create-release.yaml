@@ -6,7 +6,8 @@ on:
       - "v*.*.*"
 
 jobs:
-  release:
+  do-release:
+    if: github.repository == 'cmlibs-python/cmlibs.maths'
     runs-on: ubuntu-20.04
     steps:
       - name: Checkout
