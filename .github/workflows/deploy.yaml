@@ -7,6 +7,7 @@ on:
 
 jobs:
   build-and-release-package:
+    if: github.repository == 'hsorby/cmlibs.maths'
     runs-on: ubuntu-20.04
     name: Release package
     permissions:
@@ -16,6 +17,4 @@ jobs:
       - name: Release Python package
         uses: hsorby/release-python-package-action@main
         with:
-          release-repository: hsorby/cmlibs.maths
           pypi-package-name: cmlibs.maths
-          github-token: ${{ secrets.GITHUB_TOKEN }}
