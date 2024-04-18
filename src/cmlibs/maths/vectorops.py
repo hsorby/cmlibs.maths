@@ -4,11 +4,22 @@ they were vectors.  A basic implementation to forgo the need
 to use numpy.
 """
 import sys
-from math import sqrt, cos, sin, fabs, atan2
+from math import acos, sqrt, cos, sin, fabs, atan2
 
 
 def magnitude(v):
-    return sqrt(sum(v[i] * v[i] for i in range(len(v))))
+    """
+    return: scalar magnitude of vector v
+    """
+    return sqrt(sum(c * c for c in v))
+
+
+def set_magnitude(v, mag):
+    """
+    return: Vector v with magnitude set to mag.
+    """
+    scale = mag/magnitude(v)
+    return [c*scale for c in v]
 
 
 def add(u, v):
@@ -81,6 +92,57 @@ def matrix_vector_mult(m, v):
     Post multiply matrix m by vector v
     """
     return [dot(row_m, v) for row_m in m]
+
+
+def scale_vector(v, s):
+    """
+    Calculate s * v
+    :param v: Vector.
+    :param s: Scalar.
+    :return:
+    """
+    return [s * c for c in v]
+
+
+def scalar_projection(v1, v2):
+    """
+    :return: Scalar projection of v1 onto v2.
+    """
+    return dot(v1, normalize(v2))
+
+
+def vector_projection(v1, v2):
+    """
+    Calculate vector projection of v1 on v2
+    :return: A projection vector.
+    """
+    s1 = scalar_projection(v1, v2)
+    return scale_vector(normalize(v2), s1)
+
+
+def add_vectors(vectors, scalars = None):
+    '''
+    returns s1*v1+s2*v2+... where scalars = [s1, s2, ...] and vectors=[v1, v2, ...].
+    :return: Resultant vector
+    '''
+    if not scalars:
+        scalars = [1]*len(vectors)
+    else:
+        assert len(vectors) == len(scalars)
+
+    resultant = [0, 0, 0]
+    for i in range(len(vectors)):
+        resultant = [resultant[c] + scalars[i] * vectors[i][c] for c in range(3)]
+    return resultant
+
+
+def vector_rejection(v1, v2):
+    """
+    Calculate vector rejection of v1 on v2
+    :return: A rejection vector.
+    """
+    v1p = vector_projection(v1, v2)
+    return add_vectors([v1, v1p], [1.0, -1.0])
 
 
 def vector_matrix_mult(v, m):
@@ -207,6 +269,24 @@ def rotation_matrix_to_euler(matrix):
         euler_angles[0] = 0
         euler_angles[2] = atan2(-matrix[1][2], -matrix[0][2] * matrix[2][0])
     return euler_angles
+
+
+def angle_between_vectors(v1, v2):
+    """
+    :return: Angle between vectors v1 and v2 in radians
+    """
+    return acos(dot(normalize(v1), normalize(v2)))
+
+
+def rotate_vector_around_vector(v, k, a):
+    """
+    Rotate vector v, by an angle a (right-hand rule) in radians around vector k.
+    :return: rotated vector.
+    """
+    k = normalize(k)
+    vperp = add_vectors([v, cross(k, v)], [cos(a), sin(a)])
+    vparal = scale_vector(k, dot(k, v)*(1 - cos(a)))
+    return add_vectors([vperp, vparal])
 
 
 def axis_angle_to_quaternion(axis, angle):
