@@ -1,7 +1,7 @@
 from cmlibs.maths.vectorops import sub, dot, add, mult, cross, normalize
 
 
-def calculateLinePlaneIntersection(pt1, pt2, point_on_plane, plane_normal):
+def calculate_line_plane_intersection(pt1, pt2, point_on_plane, plane_normal):
     line_direction = sub(pt2, pt1)
     d = dot(sub(point_on_plane, pt1), plane_normal) / dot(line_direction, plane_normal)
     intersection_point = add(mult(line_direction, d), pt1)
@@ -11,7 +11,7 @@ def calculateLinePlaneIntersection(pt1, pt2, point_on_plane, plane_normal):
     return None
 
 
-def calculateExtents(values):
+def calculate_extents(values):
     """
     Calculate the maximum and minimum for each coordinate x, y, and z
     Return the max's and min's as:
@@ -38,12 +38,28 @@ def calculateExtents(values):
     return [x_min, x_max, y_min, y_max, z_min, z_max]
 
 
-def calculatePlaneNormal(pt1, pt2, pt3):
+def calculate_plane_normal(pt1, pt2, pt3):
     dir_1 = sub(pt2, pt1)
     dir_2 = sub(pt3, pt1)
     cross_vec = cross(dir_1, dir_2)
     return normalize(cross_vec)
 
 
-# define PEP8 compliant names.
-calculate_line_plane_intersection = calculateLinePlaneIntersection
+def calculate_centroid(data_points):
+    """
+    Calculates the centroid of a list of point coordinates.
+
+    :param data_points: A list containing 'n' lists (coordinates) of size 'm'. With 'n' denoting the number of points and 'm' denoting the
+        number of dimensions of the coordinates.
+    :return: An m-dimensional list containing the coordinates of the centroid.
+    """
+    actual_points = list(map(list, zip(*data_points)))
+    centroid = [sum(dim_points) / len(dim_points) for dim_points in actual_points]
+
+    return centroid
+
+
+# Define legacy names.
+calculateLinePlaneIntersection = calculate_line_plane_intersection
+calculatePlaneNormal = calculate_plane_normal
+calculateExtents = calculate_extents

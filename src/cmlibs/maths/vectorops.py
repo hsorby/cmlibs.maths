@@ -3,6 +3,7 @@ A collection of functions that operate on python lists as if
 they were vectors.  A basic implementation to forgo the need
 to use numpy.
 """
+import math
 import sys
 from math import acos, sqrt, cos, sin, fabs, atan2
 
@@ -73,10 +74,17 @@ def quaternion_to_rotation_matrix(quaternion):
     mag_q = magnitude(quaternion)
     norm_q = div(quaternion, mag_q)
     qw, qx, qy, qz = norm_q
-    mx = [[qw * qw + qx * qx - qy * qy - qz * qz, 2 * qx * qy - 2 * qw * qz, 2 * qx * qz + 2 * qw * qy],
-          [2 * qx * qy + 2 * qw * qz, qw * qw - qx * qx + qy * qy - qz * qz, 2 * qy * qz - 2 * qw * qx],
-          [2 * qx * qz - 2 * qw * qy, 2 * qy * qz + 2 * qw * qx, qw * qw - qx * qx - qy * qy + qz * qz]]
+    ww, xx, yy, zz = qw * qw, qx * qx, qy * qy, qz * qz
+    wx, wy, wz, xy, xz, yz = qw * qx, qw * qy, qw * qz, qx * qy, qx * qz, qy * qz
+    # mx = [[qw * qw + qx * qx - qy * qy - qz * qz, 2 * qx * qy - 2 * qw * qz, 2 * qx * qz + 2 * qw * qy],
+    #       [2 * qx * qy + 2 * qw * qz, qw * qw - qx * qx + qy * qy - qz * qz, 2 * qy * qz - 2 * qw * qx],
+    #       [2 * qx * qz - 2 * qw * qy, 2 * qy * qz + 2 * qw * qx, qw * qw - qx * qx - qy * qy + qz * qz]]
+    # aa, bb, cc, dd = a * a, b * b, c * c, d * d
+    # bc, ad, ac, ab, bd, cd = b * c, a * d, a * c, a * b, b * d, c * d
 
+    mx = [[ww + xx - yy - zz, 2 * (xy + wz), 2 * (xz - wy)],
+          [2 * (xy - wz), ww + yy - xx - zz, 2 * (yz + wx)],
+          [2 * (xz + wy), 2 * (yz - wx), ww + zz - xx - yy]]
     return mx
 
 
@@ -224,6 +232,15 @@ def transpose(a):
     return list(map(list, zip(*a)))
 
 
+def angle(u, v):
+    """
+    Calculate the angle between two non-zero vectors.
+    :return: The angle between them in radians.
+    """
+    d = magnitude(u) * magnitude(v)
+    return math.acos(dot(u, v) / d)
+
+
 def euler_to_rotation_matrix(euler_angles):
     """
     From Zinc graphics_library.cpp, with matrix transposed to row major.
@@ -289,25 +306,32 @@ def rotate_vector_around_vector(v, k, a):
     return add_vectors([vperp, vparal])
 
 
-def axis_angle_to_quaternion(axis, angle):
+def axis_angle_to_quaternion(axis, theta):
     """
     :param axis: Unit vector axis of rotation.
-    :param angle: Angle of rotation in right hand sense around axis, in radians.
+    :param theta: Angle of rotation in right hand sense around axis, in radians.
     :return: Quaternion representing rotation.
     """
-    sin_half_angle = sin(angle / 2)
-    return [cos(angle / 2), axis[0] * sin_half_angle, axis[1] * sin_half_angle, axis[2] * sin_half_angle]
+    sin_half_angle = sin(theta / 2)
+    return [cos(theta / 2), axis[0] * sin_half_angle, axis[1] * sin_half_angle, axis[2] * sin_half_angle]
 
 
-def axis_angle_to_rotation_matrix(axis, angle):
+def axis_angle_to_rotation_matrix(axis, theta):
     """
     Convert axis angle to a rotation matrix.
 
     :param axis: Unit vector axis of rotation.
-    :param angle: Angle of rotation in right hand sense around axis, in radians.
+    :param theta: Angle of rotation in right hand sense around axis, in radians.
     :return: 3x3 rotation matrix suitable for pre-multiplying vector v: i.e. v' = Mv
     """
-    return quaternion_to_rotation_matrix(axis_angle_to_quaternion(axis, angle))
+    axis = div(axis, sqrt(dot(axis, axis)))
+    a = cos(theta / 2.0)
+    b, c, d = mult(axis, -sin(theta / 2.0))
+    aa, bb, cc, dd = a * a, b * b, c * c, d * d
+    bc, ad, ac, ab, bd, cd = b * c, a * d, a * c, a * b, b * d, c * d
+    return [[aa + bb - cc - dd, 2 * (bc + ad), 2 * (bd - ac)],
+            [2 * (bc - ad), aa + cc - bb - dd, 2 * (cd + ab)],
+            [2 * (bd + ac), 2 * (cd - ab), aa + dd - bb - cc]]
 
 
 def reshape(a, new_shape):
