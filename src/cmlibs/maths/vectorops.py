@@ -3,7 +3,6 @@ A collection of functions that operate on python lists as if
 they were vectors.  A basic implementation to forgo the need
 to use numpy.
 """
-import math
 import sys
 from math import acos, sqrt, cos, sin, fabs, atan2
 
@@ -19,8 +18,8 @@ def set_magnitude(v, mag):
     """
     return: Vector v with magnitude set to mag.
     """
-    scale = mag/magnitude(v)
-    return [c*scale for c in v]
+    scale = mag / magnitude(v)
+    return scale_vector(v, scale)
 
 
 def add(u, v):
@@ -128,13 +127,13 @@ def vector_projection(v1, v2):
     return scale_vector(normalize(v2), s1)
 
 
-def add_vectors(vectors, scalars = None):
-    '''
+def add_vectors(vectors, scalars=None):
+    """
     returns s1*v1+s2*v2+... where scalars = [s1, s2, ...] and vectors=[v1, v2, ...].
     :return: Resultant vector
-    '''
+    """
     if not scalars:
-        scalars = [1]*len(vectors)
+        scalars = [1] * len(vectors)
     else:
         assert len(vectors) == len(scalars)
 
@@ -232,13 +231,13 @@ def transpose(a):
     return list(map(list, zip(*a)))
 
 
-def angle(u, v):
+def angle_between_vectors(u, v):
     """
     Calculate the angle between two non-zero vectors.
     :return: The angle between them in radians.
     """
     d = magnitude(u) * magnitude(v)
-    return math.acos(dot(u, v) / d)
+    return acos(dot(u, v) / d)
 
 
 def euler_to_rotation_matrix(euler_angles):
@@ -260,8 +259,10 @@ def euler_to_rotation_matrix(euler_angles):
     cos_roll = cos(euler_angles[2])
     sin_roll = sin(euler_angles[2])
     mat3x3 = [
-        [cos_azimuth * cos_elevation, cos_azimuth * sin_elevation * sin_roll - sin_azimuth * cos_roll, cos_azimuth * sin_elevation * cos_roll + sin_azimuth * sin_roll],
-        [sin_azimuth * cos_elevation, sin_azimuth * sin_elevation * sin_roll + cos_azimuth * cos_roll, sin_azimuth * sin_elevation * cos_roll - cos_azimuth * sin_roll],
+        [cos_azimuth * cos_elevation, cos_azimuth * sin_elevation * sin_roll - sin_azimuth * cos_roll,
+         cos_azimuth * sin_elevation * cos_roll + sin_azimuth * sin_roll],
+        [sin_azimuth * cos_elevation, sin_azimuth * sin_elevation * sin_roll + cos_azimuth * cos_roll,
+         sin_azimuth * sin_elevation * cos_roll - cos_azimuth * sin_roll],
         [-sin_elevation, cos_elevation * sin_roll, cos_elevation * cos_roll]]
     return mat3x3
 
@@ -288,13 +289,6 @@ def rotation_matrix_to_euler(matrix):
     return euler_angles
 
 
-def angle_between_vectors(v1, v2):
-    """
-    :return: Angle between vectors v1 and v2 in radians
-    """
-    return acos(dot(normalize(v1), normalize(v2)))
-
-
 def rotate_vector_around_vector(v, k, a):
     """
     Rotate vector v, by an angle a (right-hand rule) in radians around vector k.
@@ -302,7 +296,7 @@ def rotate_vector_around_vector(v, k, a):
     """
     k = normalize(k)
     vperp = add_vectors([v, cross(k, v)], [cos(a), sin(a)])
-    vparal = scale_vector(k, dot(k, v)*(1 - cos(a)))
+    vparal = scale_vector(k, dot(k, v) * (1 - cos(a)))
     return add_vectors([vperp, vparal])
 
 
