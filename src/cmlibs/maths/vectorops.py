@@ -4,7 +4,6 @@ they were vectors.  A basic implementation to forgo the need
 to use numpy.
 """
 import math
-import sys
 from math import sqrt, cos, sin, fabs, atan2
 
 
@@ -13,28 +12,28 @@ def magnitude(v):
 
 
 def add(u, v):
-    return [u[i] + v[i] for i in range(len(u))]
+    return [u_i + v_i for u_i, v_i in zip(u, v)]
 
 
 def sub(u, v):
-    return [u[i] - v[i] for i in range(len(u))]
+    return [u_i - v_i for u_i, v_i in zip(u, v)]
 
 
 def dot(u, v):
-    return sum(u[i] * v[i] for i in range(len(u)))
+    return sum(u_i * v_i for u_i, v_i in zip(u, v))
 
 
 def eldiv(u, v):
-    return [u[i] / v[i] for i in range(len(u))]
+    return [u_i / v_i for u_i, v_i in zip(u, v)]
 
 
 def elmult(u, v):
-    return [u[i] * v[i] for i in range(len(u))]
+    return [u_i * v_i for u_i, v_i in zip(u, v)]
 
 
 def normalize(v):
     vmag = magnitude(v)
-    return [v[i] / vmag for i in range(len(v))]
+    return [c / vmag for c in v]
 
 
 def cross(u, v):
@@ -45,12 +44,12 @@ def cross(u, v):
     return c
 
 
-def mult(u, c):
-    return [u[i] * c for i in range(len(u))]
+def mult(v, s):
+    return [c * s for c in v]
 
 
-def div(u, c):
-    return [u[i] / c for i in range(len(u))]
+def div(v, s):
+    return [c / s for c in v]
 
 
 def quaternion_to_rotation_matrix(quaternion):
@@ -165,8 +164,6 @@ def identity_matrix(size):
 
 
 def transpose(a):
-    if sys.version_info < (3, 0):
-        return map(list, zip(*a))
     return list(map(list, zip(*a)))
 
 
