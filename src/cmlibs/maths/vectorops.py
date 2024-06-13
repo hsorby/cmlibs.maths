@@ -231,7 +231,7 @@ def transpose(a):
     return list(map(list, zip(*a)))
 
 
-def angle_between_vectors(u, v):
+def angle(u, v):
     """
     Calculate the angle between two non-zero vectors.
     :return: The angle between them in radians.
