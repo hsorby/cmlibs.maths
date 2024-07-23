@@ -318,9 +318,10 @@ def axis_angle_to_rotation_matrix(axis, theta):
     :param theta: Angle of rotation in right hand sense around axis, in radians.
     :return: 3x3 rotation matrix suitable for pre-multiplying vector v: i.e. v' = Mv
     """
-    axis = div(axis, sqrt(dot(axis, axis)))
+    mag_axis = magnitude(axis)
+    norm_axis = axis if mag_axis == 0.0 else div(axis, mag_axis)
     a = cos(theta / 2.0)
-    b, c, d = mult(axis, -sin(theta / 2.0))
+    b, c, d = mult(norm_axis, -sin(theta / 2.0))
     aa, bb, cc, dd = a * a, b * b, c * c, d * d
     bc, ad, ac, ab, bd, cd = b * c, a * d, a * c, a * b, b * d, c * d
     return [[aa + bb - cc - dd, 2 * (bc + ad), 2 * (bd - ac)],
