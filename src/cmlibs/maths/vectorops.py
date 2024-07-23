@@ -62,8 +62,7 @@ def elmult(u, v):
 
 
 def normalize(v):
-    mag_v = magnitude(v)
-    return div(v, mag_v)
+    return div(v, magnitude(v))
 
 
 def cross(u, v):
