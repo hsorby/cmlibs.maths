@@ -328,6 +328,19 @@ def axis_angle_to_rotation_matrix(axis, theta):
             [2 * (bd + ac), 2 * (cd - ab), aa + dd - bb - cc]]
 
 
+def rotate_about_z_axis(v, theta):
+    """
+    Rotate the given vector v about the z-axis by theta radians.
+    :param v: vector to be rotated.
+    :param theta: angle of rotation.
+    :return rotated vector.
+    """
+    cos_theta = cos(theta)
+    sin_theta = sin(theta)
+
+    return [v[0] * cos_theta - v[1] * sin_theta, v[0] * sin_theta + v[1] * cos_theta, v[2]]
+
+
 def reshape(a, new_shape):
     b = []
     if isinstance(new_shape, tuple):
