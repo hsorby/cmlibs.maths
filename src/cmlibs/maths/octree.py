@@ -3,12 +3,12 @@ Octree for searching for objects by coordinates
 """
 import math
 
-from cmlibs.maths.vectorops import sub, dot
+from cmlibs.maths.vectorops import sub, dot, add, div
 
 
 class Octree:
     """
-    Octree for searching for objects by coordinates
+    Octree for searching for objects by coordinates.
     """
 
     def __init__(self, tolerance=None):
@@ -104,3 +104,106 @@ class Octree:
             return f'\tleaf {self._coordinates}\n'
 
         return f'{self._coordinates} - \n' + ''.join([f'{c}' for c in self._children])
+
+
+class VolumeOctreeObject:
+    """
+    Interface object for the volume octree.
+    This class defines the required interface for objects
+    given to the VolumeOctree.
+
+    It is not required that you use this object directly.
+    It is required that any objects added to the volume octree
+    follow this interface.
+    """
+
+    def __init__(self, data_object):
+        self._data_object = data_object
+
+    def identifier(self):
+        return self._data_object.identifier()
+
+    def points(self):
+        return self._data_object.points()
+
+    def distance(self, pt, tol):
+        return self._data_object.distance(pt, tol)
+
+
+class VolumeOctree:
+    """
+    An octree for managing objects with a volume.
+    """
+
+    def __init__(self, bounding_box, tolerance=1e-08, depth=0):
+        self._bounding_box = bounding_box
+        self._centre = div(add(bounding_box[0], bounding_box[1]), 2)
+        self._tolerance = tolerance
+        self._objects = {}
+        self._children = {}
+        self._depth = depth
+
+    def _child_index_lookup(self, x):
+        switch = [0 if x[i] < c_i else 1 for i, c_i in enumerate(self._centre)]
+        return sum([2**i * s for i, s in enumerate(switch)])
+
+    def _sub_bounding_box(self, index):
+        masks = [2**i for i in range(len(self._centre))]
+        p = [self._bounding_box[0 if index & m == 0 else 1][i] for i, m in enumerate(masks)]
+        return [[min(i) for i in zip(p, self._centre)], [max(i) for i in zip(p, self._centre)]]
+
+    def insert_object(self, obj):
+        indices = [self._child_index_lookup(pt) for pt in obj.points()]
+        if len(set(indices)) == 1:
+            required_child = indices[0]
+            if required_child not in self._children:
+                self._children[required_child] = VolumeOctree(self._sub_bounding_box(required_child), self._tolerance, depth=self._depth + 1)
+            # if self._children is None:
+            #     self._children = [VolumeOctree(self._sub_bounding_box(i), self._tolerance, depth=self._depth + 1) for i in range(2**len(self._centre))]
+
+            self._children[required_child].insert_object(obj)
+        else:
+            for i in set(indices):
+                if i not in self._objects:
+                    self._objects[i] = []
+                self._objects[i].append(obj)
+
+    def find_object(self, x):
+        """
+        Find the closest existing object with |x - ox| < tolerance.
+        :param x: Coordinates in a list.
+        :return: Nearest object or None.
+        """
+        octant_index = self._child_index_lookup(x)
+        target = self._children[octant_index].find_object(x) if octant_index in self._children else None
+
+        if target is not None:
+            return target
+
+        distances = [obj.distance(x, self._tolerance) for obj in self._objects.get(octant_index, [])]
+        index = next((i for i, x in enumerate(distances) if x < self._tolerance), None)
+        if index is not None:
+            return self._objects[octant_index][index]
+
+        return None  # self._children[octant_index].find_object(x) if octant_index in self._children else None
+
+    def __repr__(self):
+        indent = [' '] * 2 * self._depth
+        indent = ''.join(indent)
+
+        objects_len = ', '.join([f'{o}: {len(self._objects[o])}' for o in self._objects])
+        if self._children is None:
+            return f'{indent}leaf {self._centre} [{objects_len}]\n'
+
+        return f'{indent}{self._centre} [{objects_len}]- \n' + ''.join([f'{self._children[c]}' for c in self._children])
+
+
+def define_bounding_box():
+    """
+    From an initial point define a bounding box that covers everything.
+    Return the top, back, left and bottom, front, right points to define
+    the box.
+
+    :return: A list of two 3D points defining the extent of the bounding box.
+    """
+    return [[math.inf, math.inf, math.inf], [-math.inf, -math.inf, -math.inf]]

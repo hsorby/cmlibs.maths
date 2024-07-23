@@ -3,38 +3,66 @@ A collection of functions that operate on python lists as if
 they were vectors.  A basic implementation to forgo the need
 to use numpy.
 """
-import math
-import sys
-from math import sqrt, cos, sin, fabs, atan2
+from math import acos, sqrt, cos, sin, fabs, atan2
 
 
 def magnitude(v):
-    return sqrt(sum(v[i] * v[i] for i in range(len(v))))
+    """
+    return: scalar magnitude of vector v
+    """
+    return sqrt(sum(c * c for c in v))
+
+
+def set_magnitude(v, mag):
+    """
+    return: Vector v with magnitude set to mag.
+    """
+    scale = mag / magnitude(v)
+    return mult(v, scale)
 
 
 def add(u, v):
-    return [u[i] + v[i] for i in range(len(u))]
+    return [u_i + v_i for u_i, v_i in zip(u, v)]
 
 
 def sub(u, v):
-    return [u[i] - v[i] for i in range(len(u))]
+    return [u_i - v_i for u_i, v_i in zip(u, v)]
+
+
+def mult(v, s):
+    """
+    Calculate s * v
+    :param v: Vector.
+    :param s: Scalar.
+    :return: [s * v_1, s * v_2, ..., s * v_n]
+    """
+    return [c * s for c in v]
+
+
+def div(v, s):
+    """
+    Calculate v / s
+    :param v: Vector.
+    :param s: Scalar.
+    :return: [v_1 / s, v_2 / s, ..., v_n / s]
+    """
+    return [c / s for c in v]
 
 
 def dot(u, v):
-    return sum(u[i] * v[i] for i in range(len(u)))
+    return sum(u_i * v_i for u_i, v_i in zip(u, v))
 
 
 def eldiv(u, v):
-    return [u[i] / v[i] for i in range(len(u))]
+    return [u_i / v_i for u_i, v_i in zip(u, v)]
 
 
 def elmult(u, v):
-    return [u[i] * v[i] for i in range(len(u))]
+    return [u_i * v_i for u_i, v_i in zip(u, v)]
 
 
 def normalize(v):
-    vmag = magnitude(v)
-    return [v[i] / vmag for i in range(len(v))]
+    return div(v, magnitude(v))
 
 
 def cross(u, v):
@@ -45,36 +73,66 @@ def cross(u, v):
     return c
 
 
-def mult(u, c):
-    return [u[i] * c for i in range(len(u))]
-
-
-def div(u, c):
-    return [u[i] / c for i in range(len(u))]
-
-
-def quaternion_to_rotation_matrix(quaternion):
+def scalar_projection(v1, v2):
     """
-    This method takes a quaternion representing a rotation
-    and turns it into a rotation matrix.
-    :return: 3x3 rotation matrix suitable for pre-multiplying vector v:
-    i.e. v' = Mv
+    :return: Scalar projection of v1 onto v2.
     """
-    mag_q = magnitude(quaternion)
-    norm_q = div(quaternion, mag_q)
-    qw, qx, qy, qz = norm_q
-    ww, xx, yy, zz = qw * qw, qx * qx, qy * qy, qz * qz
-    wx, wy, wz, xy, xz, yz = qw * qx, qw * qy, qw * qz, qx * qy, qx * qz, qy * qz
-    # mx = [[qw * qw + qx * qx - qy * qy - qz * qz, 2 * qx * qy - 2 * qw * qz, 2 * qx * qz + 2 * qw * qy],
-    #       [2 * qx * qy + 2 * qw * qz, qw * qw - qx * qx + qy * qy - qz * qz, 2 * qy * qz - 2 * qw * qx],
-    #       [2 * qx * qz - 2 * qw * qy, 2 * qy * qz + 2 * qw * qx, qw * qw - qx * qx - qy * qy + qz * qz]]
-    # aa, bb, cc, dd = a * a, b * b, c * c, d * d
-    # bc, ad, ac, ab, bd, cd = b * c, a * d, a * c, a * b, b * d, c * d
+    return dot(v1, normalize(v2))
 
-    mx = [[ww + xx - yy - zz, 2 * (xy + wz), 2 * (xz - wy)],
-          [2 * (xy - wz), ww + yy - xx - zz, 2 * (yz + wx)],
-          [2 * (xz + wy), 2 * (yz - wx), ww + zz - xx - yy]]
-    return mx
+
+def projection(v1, v2):
+    """
+    Calculate vector projection of v1 on v2
+    :return: A projection vector.
+    """
+    s1 = scalar_projection(v1, v2)
+    return mult(normalize(v2), s1)
+
+
+def rejection(v1, v2):
+    """
+    Calculate vector rejection of v1 on v2
+    :return: A rejection vector.
+    """
+    v1p = projection(v1, v2)
+    return add_vectors([v1, v1p], [1.0, -1.0])
+
+
+def angle(u, v):
+    """
+    Calculate the angle between two non-zero vectors.
+    :return: The angle between them in radians.
+    """
+    d = magnitude(u) * magnitude(v)
+    return acos(dot(u, v) / d)
+
+
+def add_vectors(vectors, scalars=None):
+    """
+    returns s1*v1+s2*v2+... where scalars = [s1, s2, ...] and vectors=[v1, v2, ...].
+    :return: Resultant vector
+    """
+    if not scalars:
+        scalars = [1] * len(vectors)
+    else:
+        assert len(vectors) == len(scalars)
+
+    vector_dimension = len(vectors[0])
+    resultant = [0] * vector_dimension
+    for i, vector in enumerate(vectors):
+        resultant = [resultant[c] + scalars[i] * vector[c] for c in range(vector_dimension)]
+    return resultant
+
+
+def rotate_vector_around_vector(v, k, a):
+    """
+    Rotate vector v, by an angle a (right-hand rule) in radians around vector k.
+    :return: rotated vector.
+    """
+    k = normalize(k)
+    vperp = add_vectors([v, cross(k, v)], [cos(a), sin(a)])
+    vparal = mult(k, dot(k, v) * (1 - cos(a)))
+    return add_vectors([vperp, vparal])
 
 
 def matrix_constant_mult(m, c):
@@ -100,7 +158,7 @@ def vector_matrix_mult(v, m):
         raise ValueError('vector_matrix_mult mismatched rows')
     columns = len(m[0])
     result = []
-    for c in range(0, columns):
+    for c in range(columns):
         result.append(sum(v[r] * m[r][c] for r in range(rows)))
     return result
 
@@ -132,15 +190,16 @@ def matrix_inv(a):
     """
     Invert a square matrix by compouting the determinant and cofactor matrix.
     """
+    len_a = len(a)
     det = matrix_det(a)
 
-    if len(a) == 2:
+    if len_a == 2:
         return matrix_constant_mult([[a[1][1], -1 * a[0][1]], [-1 * a[1][0], a[0][0]]], 1 / det)
 
     cofactor = []
-    for r in range(len(a)):
+    for r in range(len_a):
         row = []
-        for c in range(len(a)):
+        for c in range(len_a):
             minor = matrix_minor(a, r, c)
             row.append(((-1) ** (r + c)) * matrix_det(minor))
         cofactor.append(row)
@@ -151,7 +210,7 @@ def matrix_inv(a):
 
 def identity_matrix(size):
     """
-    Create an identity matrix of size size.
+    Create an identity matrix of size x size.
     """
     identity = []
     for r in range(size):
@@ -165,18 +224,31 @@ def identity_matrix(size):
 
 
 def transpose(a):
-    if sys.version_info < (3, 0):
-        return map(list, zip(*a))
     return list(map(list, zip(*a)))
 
 
-def angle(u, v):
+def quaternion_to_rotation_matrix(quaternion):
     """
-    Calculate the angle between two non-zero vectors.
-    :return: The angle between them in radians.
+    This method takes a quaternion representing a rotation
+    and turns it into a rotation matrix.
+    :return: 3x3 rotation matrix suitable for pre-multiplying vector v:
+    i.e. v' = Mv
     """
-    d = magnitude(u) * magnitude(v)
-    return math.acos(dot(u, v) / d)
+    mag_q = magnitude(quaternion)
+    norm_q = div(quaternion, mag_q)
+    qw, qx, qy, qz = norm_q
+    ww, xx, yy, zz = qw * qw, qx * qx, qy * qy, qz * qz
+    wx, wy, wz, xy, xz, yz = qw * qx, qw * qy, qw * qz, qx * qy, qx * qz, qy * qz
+    # mx = [[qw * qw + qx * qx - qy * qy - qz * qz, 2 * qx * qy - 2 * qw * qz, 2 * qx * qz + 2 * qw * qy],
+    #       [2 * qx * qy + 2 * qw * qz, qw * qw - qx * qx + qy * qy - qz * qz, 2 * qy * qz - 2 * qw * qx],
+    #       [2 * qx * qz - 2 * qw * qy, 2 * qy * qz + 2 * qw * qx, qw * qw - qx * qx - qy * qy + qz * qz]]
+    # aa, bb, cc, dd = a * a, b * b, c * c, d * d
+    # bc, ad, ac, ab, bd, cd = b * c, a * d, a * c, a * b, b * d, c * d
+
+    mx = [[ww + xx - yy - zz, 2 * (xy + wz), 2 * (xz - wy)],
+          [2 * (xy - wz), ww + yy - xx - zz, 2 * (yz + wx)],
+          [2 * (xz + wy), 2 * (yz - wx), ww + zz - xx - yy]]
+    return mx
 
 
 def euler_to_rotation_matrix(euler_angles):
@@ -198,8 +270,10 @@ def euler_to_rotation_matrix(euler_angles):
     cos_roll = cos(euler_angles[2])
     sin_roll = sin(euler_angles[2])
     mat3x3 = [
-        [cos_azimuth * cos_elevation, cos_azimuth * sin_elevation * sin_roll - sin_azimuth * cos_roll, cos_azimuth * sin_elevation * cos_roll + sin_azimuth * sin_roll],
-        [sin_azimuth * cos_elevation, sin_azimuth * sin_elevation * sin_roll + cos_azimuth * cos_roll, sin_azimuth * sin_elevation * cos_roll - cos_azimuth * sin_roll],
+        [cos_azimuth * cos_elevation, cos_azimuth * sin_elevation * sin_roll - sin_azimuth * cos_roll,
+         cos_azimuth * sin_elevation * cos_roll + sin_azimuth * sin_roll],
+        [sin_azimuth * cos_elevation, sin_azimuth * sin_elevation * sin_roll + cos_azimuth * cos_roll,
+         sin_azimuth * sin_elevation * cos_roll - cos_azimuth * sin_roll],
         [-sin_elevation, cos_elevation * sin_roll, cos_elevation * cos_roll]]
     return mat3x3
 
