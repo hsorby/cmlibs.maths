@@ -11,7 +11,7 @@ class OctTreeTestCase(unittest.TestCase):
         expected_magnitude_squared = 14.0
         expected_magnitude = sqrt(expected_magnitude_squared)
 
-        TOL = 1.0E-10
+        TOL = 1.0E-14
         self.assertAlmostEqual(magnitude(v), expected_magnitude, delta=TOL)
         self.assertAlmostEqual(magnitude_squared(v), expected_magnitude_squared, delta=TOL)
 
@@ -21,7 +21,7 @@ class OctTreeTestCase(unittest.TestCase):
         expected_distance_squared = 14.0
         expected_distance = sqrt(expected_distance_squared)
 
-        TOL = 1.0E-10
+        TOL = 1.0E-14
         self.assertAlmostEqual(distance(u, v), expected_distance, delta=TOL)
         self.assertAlmostEqual(distance_squared(u, v), expected_distance_squared, delta=TOL)
 
