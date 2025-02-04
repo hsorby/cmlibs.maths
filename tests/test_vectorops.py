@@ -4,7 +4,7 @@ from math import sqrt
 from cmlibs.maths.vectorops import distance, distance_squared, magnitude, magnitude_squared
 
 
-class OctTreeTestCase(unittest.TestCase):
+class VectorOpsTestCase(unittest.TestCase):
 
     def test_magnitude(self):
         v = [1.0, 2.0, -3.0]
