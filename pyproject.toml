@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=61.0", "setuptools_scm>=8.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools-git-versioning]
+enabled = true
+
+[project]
+name = "cmlibs.maths"
+dynamic = ["version"]
+keywords = ["Math", "CMLibs", "Zinc"]
+readme = "README.rst"
+license = {file = "LICENSE"}
+authors = [
+    { name="Hugh Sorby", email="h.sorby@auckland.ac.nz" },
+]
+dependencies = [
+]
+description = "A collection of math functions and algorithms."
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: Apache Software License",
+    "Operating System :: OS Independent",
+    "Topic :: Scientific/Engineering :: Medical Science Apps.",
+]
+
+[project.urls]
+Homepage = "https://cmlibs.org"
+Repository = "https://github.com/CMLibs-Python/cmlibs.utils"
+
+[tool.setuptools_scm]
