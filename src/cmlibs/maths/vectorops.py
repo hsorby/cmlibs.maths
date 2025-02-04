@@ -13,6 +13,13 @@ def magnitude(v):
     return sqrt(sum(c * c for c in v))
 
 
+def magnitude_squared(v):
+    """
+    return: Squared scalar magnitude of vector v, avoiding sqrt().
+    """
+    return sum(c * c for c in v)
+
+
 def set_magnitude(v, mag):
     """
     return: Vector v with magnitude set to mag.
@@ -27,6 +34,32 @@ def add(u, v):
 
 def sub(u, v):
     return [u_i - v_i for u_i, v_i in zip(u, v)]
+
+
+def distance(u, v):
+    """
+    :param u: Vector.
+    :param v: Vector.
+    :return: Scalar Euclidean distance between two points.
+    """
+    value = 0.0
+    for u_i, v_i in zip(u, v):
+        w = u_i - v_i
+        value += w * w
+    return sqrt(value)
+
+
+def distance_squared(u, v):
+    """
+    :param u: Vector.
+    :param v: Vector.
+    :return: Scalar squared Euclidean distance between points, avoiding sqrt().
+    """
+    value = 0.0
+    for u_i, v_i in zip(u, v):
+        w = u_i - v_i
+        value += w * w
+    return value
 
 
 def mult(v, s):
